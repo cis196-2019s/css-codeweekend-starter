@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<h1><%= @course.full_title %></h1>
+<p><strong>Description:</strong> <%= @course.description %></p>
+
+<h2>Students:</h2>
+<% if @course.students.empty? %>
+  <p>No students enrolled yet...</p>
+<% else %>
+  <ul>
+    <% @course.students.each do |student| %>
+      <li><%= link_to student.full_name, "/students/#{student.id}", class: 'btn btn-primary' %> | <%= link_to 'Unenroll', "/courses/#{@course.id}/students/#{student.id}", method: :delete, class: 'btn btn-danger' %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<h3>Add a student:</h3>
+<%= form_with url: "/courses/#{@course.id}/students" do |form| %>
+  <%= form.collection_select :student_id, @students, :id, :full_name, prompt: true %>
+  <%= form.submit 'Add Student', class: 'btn btn-success' %>
+<% end %>
+
+<h2>Reviews:</h2>
+<% if @course.reviews.empty? %>
+  <p>No reviews yet...</p>
+<% else %>
+  <ul>
+    <% @course.reviews.each do |review| %>
+      <li><%= review.content %> | <%= link_to 'Edit', "/courses/#{@course.id}/reviews/#{review.id}/edit", class: 'btn btn-primary' %> | <%= link_to 'Destroy', "/courses/#{@course.id}/reviews/#{review.id}", method: :delete, class: 'btn btn-danger' %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<h3>Add a review:</h3>
+<%= form_with url: "/courses/#{@course.id}/reviews" do |form| %>
+  <%= form.text_area 'review[content]', class: 'form-control' %><br>
+  <%= form.submit 'Add Review', class: 'btn btn-success' %>
+<% end %>
+
+<br>
+
+<%= link_to 'Edit', "/courses/#{@course.id}/edit", class: 'btn btn-primary' %> |
+<%= link_to 'Destroy', "/courses/#{@course.id}", method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %> |
+<%= link_to 'Back', '/courses', class: 'btn btn-primary' %>
